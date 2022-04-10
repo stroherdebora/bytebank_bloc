@@ -6,6 +6,40 @@ import 'package:bytebank/models/transaction.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:flutter/material.dart';
 
+@immutable
+abstract class TransactionFormState {
+  const TransactionFormState();
+}
+
+@immutable
+class LoadingContactsListState extends TransactionFormState {
+  const LoadingContactsListState();
+}
+
+@immutable
+class InitContactsListState extends TransactionFormState {
+  const InitContactsListState();
+}
+
+@immutable
+class LoadedContactsListState extends TransactionFormState {
+  final List<Contact> _contacts;
+
+  const LoadedContactsListState(this._contacts);
+}
+
+@immutable
+class FatalErrorContactsListState extends TransactionFormState {
+  final String _message;
+
+  const FatalErrorContactsListState(this._message);
+
+  @override
+  String toString() {
+    return 'FatalErrorContactsListState{_message: $_message}';
+  }
+}
+
 class TransactionFormContainer extends BlocContainer {
   final Contact _contact;
   TransactionFormContainer(this._contact);
