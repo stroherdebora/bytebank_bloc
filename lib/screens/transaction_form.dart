@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:bytebank/components/container.dart';
 import 'package:bytebank/components/error.dart';
 import 'package:bytebank/components/progress.dart';
-import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/models/contact.dart';
@@ -75,16 +74,17 @@ class TransactionFormContainer extends BlocContainer {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<TransactionFormCubit>(
-        create: (BuildContext context) {
-          return TransactionFormCubit();
-        },
-        child: BlocListener<TransactionFormCubit, TransactionFormState>(
-            listener: (context, state) {
-              if (state is SentState) {
-                Navigator.of(context).pop();
-              }
-            },
-            child: TransactionFormStateless(_contact)));
+      create: (BuildContext context) {
+        return TransactionFormCubit();
+      },
+      child: BlocListener<TransactionFormCubit, TransactionFormState>(
+          listener: (context, state) {
+            if (state is SentState) {
+              Navigator.of(context).pop();
+            }
+          },
+          child: TransactionFormStateless(_contact)),
+    );
   }
 }
 
@@ -111,43 +111,27 @@ class TransactionFormStateless extends StatelessWidget {
     });
   }
 
-  // void _save(Transaction transactionCreated, String password, BuildContext context) async {
-  //   _webClient.save(transactionCreated, password).then((transaction) {
-  //     showDialog(
+  // Future _showSuccessfulMessage(Transaction transaction, BuildContext context) async {
+  //   if (transaction != null) {
+  //     await showDialog(
   //         context: context,
   //         builder: (contextDialog) {
   //           return SuccessDialog('successful transaction');
-  //         }).then((value) => Navigator.pop(context));
-  //   }).catchError((e) {
-  //     showDialog(
-  //         context: context,
-  //         builder: (contextDialog) {
-  //           return FailureDialog(e.message);
   //         });
-  //   }, test: (e) => e is Exception);
+  //     Navigator.pop(context);
+  //   }
   // }
 
-  Future _showSuccessfulMessage(Transaction transaction, BuildContext context) async {
-    if (transaction != null) {
-      await showDialog(
-          context: context,
-          builder: (contextDialog) {
-            return SuccessDialog('successful transaction');
-          });
-      Navigator.pop(context);
-    }
-  }
-
-  void _showFailureMessage(
-    BuildContext context, {
-    String message = 'Unknown error',
-  }) {
-    showDialog(
-        context: context,
-        builder: (contextDialog) {
-          return FailureDialog(message);
-        });
-  }
+  // void _showFailureMessage(
+  //   BuildContext context, {
+  //   String message = 'Unknown error',
+  // }) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (contextDialog) {
+  //         return FailureDialog(message);
+  //       });
+  // }
 }
 
 class _BasicForm extends StatelessWidget {
