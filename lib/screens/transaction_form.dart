@@ -66,24 +66,21 @@ class TransactionFormStateless extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionFormCubit, TransactionFormState>(builder: (context, state) {
-      if (state is ShowFormState){
-       return _BasicForm();
+      if (state is ShowFormState) {
+        return _BasicForm();
+      }
 
-      }
-    
-    
-     if (state is SendingState) {
+      if (state is SendingState) {
         return ProgressWindow();
-      } 
-      
-      if (state is SentState) {
-       Navigator.pop(context);
-      } 
-      
-      if (state is FatalErrorContactsListState) {
-        return Text("Fatal error!");
       }
-      );
+
+      if (state is SentState) {
+        Navigator.pop(context);
+      }
+
+      if (state is FatalErrorContactsListState) {}
+      return Text("Fatal error!");
+    });
   }
 
   void _save(Transaction transactionCreated, String password, BuildContext context) async {
