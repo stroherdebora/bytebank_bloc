@@ -1,11 +1,13 @@
 # bytebank_bloc
 
-Criar blocs e cubit
+Aplicação para o estudo de Bloc.
 
-Gerenciar o estado
+* Criar blocs e cubit
 
-Criar um framework para gerenciamento de estado
+* Gerenciar o estado
 
-Separar UI, estado e eventos
+* Criar um framework para gerenciamento de estado
 
-Lidar com a assincronicidade no meio de uma tela
+* Separar UI, estado e eventos
+
+* Lidar com a assincronicidade no meio de uma tela
