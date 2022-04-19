@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bytebank/components/container.dart';
+import 'package:bytebank/components/progress.dart';
 import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
@@ -32,12 +33,42 @@ class SentState extends TransactionFormState {
 }
 
 @immutable
-class FatalErrorContactsListState extends TransactionFormState {
-  const FatalErrorContactsListState();
+class FatalErrorFormState extends TransactionFormState {
+  final String message;
+
+  const FatalErrorFormState(this.message);
 }
 
 class TransactionFormCubit extends Cubit<TransactionFormState> {
   TransactionFormCubit() : super(ShowFormState());
+
+  void save(Transaction transactionCreated, String password, BuildContext context) async {
+    emit(SendingState());
+    Transaction transaction = await _send(transactionCreated, password, context);
+    emit(SentState());
+    // _showSuccessfulMessage(transaction, context);
+  }
+
+  Future<Transaction> _send(Transaction transactionCreated, String password, BuildContext context) async {
+    // setState(() {
+    //   _sending = true;
+    // });
+    final Transaction? transaction = await TransactionWebClient().save(transactionCreated, password).catchError((e) {
+      emit(FatalErrorFormState(e.message));
+      // _showFailureMessage(context, message: e.message);
+    }, test: (e) => e is HttpException).catchError((e) {
+      emit(FatalErrorFormState('timeout submitting the transaction'));
+      // _showFailureMessage(context, message: 'timeout submitting the transaction');
+    }, test: (e) => e is TimeoutException).catchError((e) {
+      emit(FatalErrorFormState(e.message));
+      // _showFailureMessage(context);
+    }).whenComplete(() {
+      // setState(() {
+      //   _sending = false;
+      // });
+    });
+    return transaction!;
+  }
 }
 
 class TransactionFormContainer extends BlocContainer {
@@ -55,11 +86,6 @@ class TransactionFormContainer extends BlocContainer {
 }
 
 class TransactionFormStateless extends StatelessWidget {
-  final TextEditingController _valueController = TextEditingController();
-  final TransactionWebClient _webClient = TransactionWebClient();
-  final String transactionId = Uuid().v4();
-  bool _sending = false;
-
   final Contact _contact;
   TransactionFormStateless(this._contact);
 
@@ -67,37 +93,37 @@ class TransactionFormStateless extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<TransactionFormCubit, TransactionFormState>(builder: (context, state) {
       if (state is ShowFormState) {
-        return _BasicForm();
+        return _BasicForm(_contact);
       }
 
       if (state is SendingState) {
-        return ProgressWindow();
+        return ProgressView();
       }
 
       if (state is SentState) {
         Navigator.pop(context);
       }
 
-      if (state is FatalErrorContactsListState) {}
+      if (state is FatalErrorFormState) {}
       return Text("Fatal error!");
     });
   }
 
-  void _save(Transaction transactionCreated, String password, BuildContext context) async {
-    _webClient.save(transactionCreated, password).then((transaction) {
-      showDialog(
-          context: context,
-          builder: (contextDialog) {
-            return SuccessDialog('successful transaction');
-          }).then((value) => Navigator.pop(context));
-    }).catchError((e) {
-      showDialog(
-          context: context,
-          builder: (contextDialog) {
-            return FailureDialog(e.message);
-          });
-    }, test: (e) => e is Exception);
-  }
+  // void _save(Transaction transactionCreated, String password, BuildContext context) async {
+  //   _webClient.save(transactionCreated, password).then((transaction) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (contextDialog) {
+  //           return SuccessDialog('successful transaction');
+  //         }).then((value) => Navigator.pop(context));
+  //   }).catchError((e) {
+  //     showDialog(
+  //         context: context,
+  //         builder: (contextDialog) {
+  //           return FailureDialog(e.message);
+  //         });
+  //   }, test: (e) => e is Exception);
+  // }
 
   Future _showSuccessfulMessage(Transaction transaction, BuildContext context) async {
     if (transaction != null) {
@@ -108,24 +134,6 @@ class TransactionFormStateless extends StatelessWidget {
           });
       Navigator.pop(context);
     }
-  }
-
-  Future<Transaction> _send(Transaction transactionCreated, String password, BuildContext context) async {
-    // setState(() {
-    //   _sending = true;
-    // });
-    final Transaction? transaction = await _webClient.save(transactionCreated, password).catchError((e) {
-      _showFailureMessage(context, message: e.message);
-    }, test: (e) => e is HttpException).catchError((e) {
-      _showFailureMessage(context, message: 'timeout submitting the transaction');
-    }, test: (e) => e is TimeoutException).catchError((e) {
-      _showFailureMessage(context);
-    }).whenComplete(() {
-      // setState(() {
-      //   _sending = false;
-      // });
-    });
-    return transaction!;
   }
 
   void _showFailureMessage(
@@ -141,6 +149,12 @@ class TransactionFormStateless extends StatelessWidget {
 }
 
 class _BasicForm extends StatelessWidget {
+  final _contact;
+
+  _BasicForm(this._contact);
+  final TextEditingController _valueController = TextEditingController();
+  final String transactionId = Uuid().v4();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -192,7 +206,7 @@ class _BasicForm extends StatelessWidget {
                         builder: (contextDialog) {
                           return TransactionAuthDialog(
                             onConfirm: (String password) {
-                              _save(transactionCreated, password, context);
+                              BlocProvider.of<TransactionFormCubit>(context).save(transactionCreated, password, context);
                             },
                           );
                         },
