@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bytebank/components/container.dart';
+import 'package:bytebank/components/error.dart';
 import 'package:bytebank/components/progress.dart';
 import 'package:bytebank/components/response_dialog.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
@@ -44,30 +45,26 @@ class TransactionFormCubit extends Cubit<TransactionFormState> {
 
   void save(Transaction transactionCreated, String password, BuildContext context) async {
     emit(SendingState());
-    Transaction transaction = await _send(transactionCreated, password, context);
-    emit(SentState());
-    // _showSuccessfulMessage(transaction, context);
+    await _send(
+      transactionCreated,
+      password,
+      context,
+    );
   }
 
-  Future<Transaction> _send(Transaction transactionCreated, String password, BuildContext context) async {
-    // setState(() {
-    //   _sending = true;
-    // });
-    final Transaction? transaction = await TransactionWebClient().save(transactionCreated, password).catchError((e) {
+  _send(Transaction transactionCreated, String password, BuildContext context) async {
+    await TransactionWebClient()
+        .save(transactionCreated, password)
+        .then((transaction) => emit(
+              SentState(),
+            ))
+        .catchError((e) {
       emit(FatalErrorFormState(e.message));
-      // _showFailureMessage(context, message: e.message);
     }, test: (e) => e is HttpException).catchError((e) {
       emit(FatalErrorFormState('timeout submitting the transaction'));
-      // _showFailureMessage(context, message: 'timeout submitting the transaction');
     }, test: (e) => e is TimeoutException).catchError((e) {
       emit(FatalErrorFormState(e.message));
-      // _showFailureMessage(context);
-    }).whenComplete(() {
-      // setState(() {
-      //   _sending = false;
-      // });
     });
-    return transaction!;
   }
 }
 
@@ -81,7 +78,13 @@ class TransactionFormContainer extends BlocContainer {
         create: (BuildContext context) {
           return TransactionFormCubit();
         },
-        child: TransactionFormStateless(_contact));
+        child: BlocListener<TransactionFormCubit, TransactionFormState>(
+            listener: (context, state) {
+              if (state is SentState) {
+                Navigator.of(context).pop();
+              }
+            },
+            child: TransactionFormStateless(_contact)));
   }
 }
 
@@ -96,16 +99,15 @@ class TransactionFormStateless extends StatelessWidget {
         return _BasicForm(_contact);
       }
 
-      if (state is SendingState) {
+      if (state is SendingState || state is SentState) {
         return ProgressView();
       }
 
-      if (state is SentState) {
-        Navigator.pop(context);
+      if (state is FatalErrorFormState) {
+        return ErrorView(state.message);
       }
 
-      if (state is FatalErrorFormState) {}
-      return Text("Fatal error!");
+      return ErrorView("Unknown error!");
     });
   }
 
