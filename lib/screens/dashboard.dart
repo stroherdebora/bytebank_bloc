@@ -1,4 +1,5 @@
 import 'package:bytebank/components/container.dart';
+import 'package:bytebank/components/localization.dart';
 import 'package:bytebank/models/name.dart';
 import 'package:bytebank/screens/contacts_list.dart';
 import 'package:bytebank/screens/name.dart';
@@ -21,6 +22,8 @@ class Dashboard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final i18n = DashboardViewI18N(context);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -46,17 +49,17 @@ class Dashboard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   _FeatureItem(
-                    'Transfer',
+                    i18n.transfer()!,
                     Icons.monetization_on,
                     onClick: () => _showContactsList(context),
                   ),
                   _FeatureItem(
-                    'Transaction feed',
+                    i18n.transactionFeed(),
                     Icons.description,
                     onClick: () => _showTransactionsList(context),
                   ),
                   _FeatureItem(
-                    'Change name',
+                    i18n.changeName(),
                     Icons.person_outline,
                     onClick: () => _showChangeName(context),
                   ),
@@ -67,6 +70,22 @@ class Dashboard extends StatelessWidget {
         ],
       ),
     );
+  }
+}
+
+class DashboardViewI18N extends ViewI18N {
+  DashboardViewI18N(BuildContext context) : super(context);
+
+  String? transfer() {
+    return localize({"pt-br:": "Transferir", "en-us": "Transfer"});
+  }
+
+  String transactionFeed() {
+    return 'Transaction Feed';
+  }
+
+  String changeName() {
+    return 'Change Name';
   }
 }
 
