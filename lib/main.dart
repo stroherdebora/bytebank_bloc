@@ -4,6 +4,8 @@ import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'components/localization.dart';
+
 void main() {
   BlocOverrides.runZoned(
     () {
@@ -34,26 +36,4 @@ class BytebankApp extends StatelessWidget {
       ),
     );
   }
-}
-
-class LocalizationContainer extends BlocContainer {
-  final Widget? child;
-
-  LocalizationContainer({@required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocProvider<CurrentLocaleCubit>(
-      create: (_) => CurrentLocaleCubit(),
-      child: this.child,
-    );
-  }
-}
-
-class CurrentLocaleCubit extends Cubit<String> {
-  CurrentLocaleCubit() : super('en');
-
-  // void changeLocale(String locale) {
-  //   emit(locale);
-  // }
 }
