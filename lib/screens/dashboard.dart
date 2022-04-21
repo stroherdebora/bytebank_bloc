@@ -25,6 +25,7 @@ class Dashboard extends StatelessWidget {
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
         // misturando um blocbuilder (que é um observer de eventos) com UI
+        backgroundColor: Theme.of(context).primaryColor,
         title: BlocBuilder<NameCubit, String>(
           builder: (context, state) => Text('Welcome $state'),
         ),

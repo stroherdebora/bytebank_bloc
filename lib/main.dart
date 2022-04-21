@@ -1,3 +1,4 @@
+import 'package:bytebank/components/container.dart';
 import 'package:bytebank/components/theme.dart';
 import 'package:bytebank/screens/dashboard.dart';
 import 'package:flutter/material.dart';
@@ -28,7 +29,31 @@ class BytebankApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: bitebankTheme,
-      home: DashboardContainer(),
+      home: LocalizationContainer(
+        child: DashboardContainer(),
+      ),
     );
   }
+}
+
+class LocalizationContainer extends BlocContainer {
+  final Widget? child;
+
+  LocalizationContainer({@required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider<CurrentLocaleCubit>(
+      create: (_) => CurrentLocaleCubit(),
+      child: this.child,
+    );
+  }
+}
+
+class CurrentLocaleCubit extends Cubit<String> {
+  CurrentLocaleCubit() : super('en');
+
+  // void changeLocale(String locale) {
+  //   emit(locale);
+  // }
 }
