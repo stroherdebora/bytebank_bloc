@@ -49,17 +49,17 @@ class Dashboard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   _FeatureItem(
-                    i18n.transfer()!,
+                    i18n.transfer!,
                     Icons.monetization_on,
                     onClick: () => _showContactsList(context),
                   ),
                   _FeatureItem(
-                    i18n.transactionFeed(),
+                    i18n.transactionFeed!,
                     Icons.description,
                     onClick: () => _showTransactionsList(context),
                   ),
                   _FeatureItem(
-                    i18n.changeName(),
+                    i18n.changeName!,
                     Icons.person_outline,
                     onClick: () => _showChangeName(context),
                   ),
@@ -76,17 +76,11 @@ class Dashboard extends StatelessWidget {
 class DashboardViewI18N extends ViewI18N {
   DashboardViewI18N(BuildContext context) : super(context);
 
-  String? transfer() {
-    return localize({"pt-br:": "Transferir", "en-us": "Transfer"});
-  }
+  String? get transfer => localize({"pt-br:": "Transferir", "en-us": "Transfer"});
 
-  String transactionFeed() {
-    return 'Transaction Feed';
-  }
+  String? get transactionFeed => localize({"pt-br": "Transações", "en-us": "Transaction Feed"});
 
-  String changeName() {
-    return 'Change Name';
-  }
+  String? get changeName => localize({"pt-br": "Mudar Nome", "en-us": "Change Name"});
 }
 
 void _showContactsList(BuildContext blocContext) {

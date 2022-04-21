@@ -19,7 +19,7 @@ class LocalizationContainer extends BlocContainer {
 }
 
 class CurrentLocaleCubit extends Cubit<String> {
-  CurrentLocaleCubit() : super('pt_br');
+  CurrentLocaleCubit() : super("pt-br");
 }
 
 class ViewI18N {
