@@ -76,7 +76,7 @@ class Dashboard extends StatelessWidget {
 class DashboardViewI18N extends ViewI18N {
   DashboardViewI18N(BuildContext context) : super(context);
 
-  String? get transfer => localize({"pt-br:": "Transferir", "en-us": "Transfer"});
+  String? get transfer => localize({"pt-br": "Transferir", "en-us": "Transfer"});
 
   String? get transactionFeed => localize({"pt-br": "Transações", "en-us": "Transaction Feed"});
 
