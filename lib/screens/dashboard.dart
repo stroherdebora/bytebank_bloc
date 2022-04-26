@@ -12,18 +12,20 @@ class DashboardContainer extends BlocContainer {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => NameCubit("Débora"),
-      child: Dashboard(),
+      child: I18NLoadingContainer(
+        (I18NMessages messages) => DashboardView(DashboardViewLazyI18N(messages)),
+      ),
     );
   }
 }
 
-class Dashboard extends StatelessWidget {
-  const Dashboard({Key? key}) : super(key: key);
+class DashboardView extends StatelessWidget {
+  final DashboardViewLazyI18N _i18n;
+
+  const DashboardView(this._i18n);
 
   @override
   Widget build(BuildContext context) {
-    final i18n = DashboardViewI18N(context);
-
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -49,17 +51,17 @@ class Dashboard extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 children: [
                   _FeatureItem(
-                    i18n.transfer!,
+                    _i18n.transfer!,
                     Icons.monetization_on,
                     onClick: () => _showContactsList(context),
                   ),
                   _FeatureItem(
-                    i18n.transactionFeed!,
+                    _i18n.transactionFeed!,
                     Icons.description,
                     onClick: () => _showTransactionsList(context),
                   ),
                   _FeatureItem(
-                    i18n.changeName!,
+                    _i18n.changeName!,
                     Icons.person_outline,
                     onClick: () => _showChangeName(context),
                   ),
@@ -71,6 +73,18 @@ class Dashboard extends StatelessWidget {
       ),
     );
   }
+}
+
+class DashboardViewLazyI18N {
+  final I18NMessages _messages;
+
+  DashboardViewLazyI18N(this._messages);
+
+  String? get transfer => _messages.get("transfer");
+
+  String? get transactionFeed => _messages.get("Transaction Feed");
+
+  String? get changeName => _messages.get("Change Name");
 }
 
 class DashboardViewI18N extends ViewI18N {
