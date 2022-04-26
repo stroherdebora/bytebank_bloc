@@ -35,3 +35,56 @@ class ViewI18N {
     return values[_language];
   }
 }
+
+@immutable
+abstract class I18nMessagesState {
+  const I18nMessagesState();
+}
+
+@immutable
+class LoadingI18nMessagesState extends I18nMessagesState {
+  const LoadingI18nMessagesState();
+}
+
+@immutable
+class InitI18nMessagesState extends I18nMessagesState {
+  const InitI18nMessagesState();
+}
+
+@immutable
+class LoadedI18nMessagesState extends I18nMessagesState {
+  final I18nMessages _messages;
+
+  LoadedI18nMessagesState(this._messages);
+
+}
+
+class I18nMessages {
+  final Map<String, String> _messages;
+
+  I18nMessages(this._messages);
+
+  String? get(String key) {
+    assert (_messages.containsKey(key));
+    return _messages[key];
+  }
+}
+
+@immutable
+class FatalErrorI18nMessagesState extends I18nMessagesState {
+
+  const FatalErrorI18nMessagesState();
+
+}
+
+class I18NLoadingView extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<I18NMessagesCubit, I18nMessagesState>(
+      builder: (context, state){
+        if (state is I18)
+      },),(
+     
+    );
+  }
+}
