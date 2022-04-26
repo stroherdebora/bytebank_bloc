@@ -29,6 +29,9 @@ class ViewI18N {
   String? _language;
 
   ViewI18N(BuildContext context) {
+    // o problema dessa abordagem
+    // é o rebuild quando voce troca a lingua
+    // o que vc quer reconstruir quando trocar o currentlocalecubit?
     this._language = BlocProvider.of<CurrentLocaleCubit>(context).state;
   }
 
@@ -129,8 +132,8 @@ class I18NMessagesCubit extends Cubit<I18nMessagesState> {
 
     emit(LoadedI18nMessagesState(I18NMessages({
       "transfer": "TRANSFER",
-      "transaction feed": "TRANSACTION FEED",
-      "change name": "CHANGE NAME",
+      "transaction_feed": "TRANSACTION FEED",
+      "change_name": "CHANGE NAME",
     })));
   }
 }
