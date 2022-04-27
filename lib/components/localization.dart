@@ -3,6 +3,7 @@
 import 'package:bytebank/components/container.dart';
 import 'package:bytebank/components/error.dart';
 import 'package:bytebank/components/progress.dart';
+import 'package:bytebank/http/webclients/i18nWebClient.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,6 +30,9 @@ class ViewI18N {
   String? _language;
 
   ViewI18N(BuildContext context) {
+    // o problema dessa abordagem
+    // é o rebuild quando voce troca a lingua
+    // o que vc quer reconstruir quando trocar o currentlocalecubit?
     this._language = BlocProvider.of<CurrentLocaleCubit>(context).state;
   }
 
@@ -88,7 +92,7 @@ class I18NLoadingContainer extends BlocContainer {
     return BlocProvider<I18NMessagesCubit>(
       create: (BuildContext context) {
         final cubit = I18NMessagesCubit();
-        cubit.reload();
+        cubit.reload(I18NWebClient());
         return cubit;
       },
       child: I18NLoadingView(this._creator),
@@ -106,7 +110,7 @@ class I18NLoadingView extends StatelessWidget {
     return BlocBuilder<I18NMessagesCubit, I18nMessagesState>(
       builder: (context, state) {
         if (state is InitI18nMessagesState || state is LoadingI18nMessagesState) {
-          return ProgressView();
+          return ProgressView(message: "Loading...");
         }
 
         if (state is LoadedI18nMessagesState) {
@@ -123,14 +127,8 @@ class I18NLoadingView extends StatelessWidget {
 class I18NMessagesCubit extends Cubit<I18nMessagesState> {
   I18NMessagesCubit() : super(InitI18nMessagesState());
 
-  reload() {
+  reload(I18NWebClient client) {
     emit(LoadingI18nMessagesState());
-    // load().then((messages) => emit(LoadedI18nMessagesState(messages)));
-
-    emit(LoadedI18nMessagesState(I18NMessages({
-      "transfer": "TRANSFER",
-      "transaction feed": "TRANSACTION FEED",
-      "change name": "CHANGE NAME",
-    })));
+    client.findAll().then((messages) => emit(LoadedI18nMessagesState(I18NMessages(messages))));
   }
 }

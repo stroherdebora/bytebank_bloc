@@ -82,9 +82,9 @@ class DashboardViewLazyI18N {
 
   String? get transfer => _messages.get("transfer");
 
-  String? get transactionFeed => _messages.get("Transaction Feed");
+  String? get transactionFeed => _messages.get("transaction_feed");
 
-  String? get changeName => _messages.get("Change Name");
+  String? get changeName => _messages.get("change_name");
 }
 
 class DashboardViewI18N extends ViewI18N {
