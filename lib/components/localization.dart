@@ -65,7 +65,7 @@ class LoadedI18nMessagesState extends I18nMessagesState {
 }
 
 class I18NMessages {
-  final Map<String, String> _messages;
+  final Map<String, dynamic> _messages;
 
   I18NMessages(this._messages);
 
