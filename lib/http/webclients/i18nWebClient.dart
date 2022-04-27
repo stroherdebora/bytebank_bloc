@@ -7,16 +7,16 @@ final Uri messagesUri = Uri.https(
     "stroherdebora/"
         "4af6389358e7487f88e2bba09504a380/" /* GIST_ID */
 
-        "raw"
-        "a6435c9cbcd7c6619238009fd499e6f7eee6356d/" /* COMMIT_ID */
+        "raw/"
+        "5ad37bd43c769e806fe422c360141500d26e9fe6/" /* COMMIT_ID */
 
         "i18n.json" /* FILE_NAME */);
 
 class I18NWebClient {
-  Future<Map<String, String>> findAll() async {
+  Future<Map<String, dynamic>> findAll() async {
     final Response response = await client.get(messagesUri);
 
-    final Map<String, String> decodedJson = jsonDecode(response.body);
+    final Map<String, dynamic> decodedJson = jsonDecode(response.body);
 
     return decodedJson;
   }
