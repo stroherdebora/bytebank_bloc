@@ -1,5 +1,7 @@
 // localization e internationalization
 
+import 'dart:async';
+
 import 'package:bytebank/components/container.dart';
 import 'package:bytebank/components/error.dart';
 import 'package:bytebank/components/progress.dart';
@@ -7,6 +9,7 @@ import 'package:bytebank/http/webclients/i18nWebClient.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:localstorage/localstorage.dart';
 
 class LocalizationContainer extends BlocContainer {
   final Widget? child;
@@ -98,7 +101,7 @@ class I18NLoadingContainer extends BlocContainer {
   Widget build(BuildContext context) {
     return BlocProvider<I18NMessagesCubit>(
       create: (BuildContext context) {
-        final cubit = I18NMessagesCubit();
+        final cubit = I18NMessagesCubit(this.viewKey!);
         cubit.reload(I18NWebClient(this.viewKey!));
         return cubit;
       },
@@ -132,10 +135,27 @@ class I18NLoadingView extends StatelessWidget {
 }
 
 class I18NMessagesCubit extends Cubit<I18nMessagesState> {
-  I18NMessagesCubit() : super(InitI18nMessagesState());
+  final LocalStorage storage = new LocalStorage('local unsecure version_1.json');
 
-  reload(I18NWebClient client) {
+  final String _viewKey;
+
+  I18NMessagesCubit(this._viewKey) : super(InitI18nMessagesState());
+
+  reload(I18NWebClient client) async {
     emit(LoadingI18nMessagesState());
-    client.findAll().then((messages) => emit(LoadedI18nMessagesState(I18NMessages(messages))));
+    await storage.ready;
+    final items = storage.getItem(_viewKey);
+    print("Loaded $_viewKey $items");
+    if (items != null) {
+      emit(LoadedI18nMessagesState(I18NMessages(items)));
+      return;
+    }
+    client.findAll().then(saveAndRefresh);
+  }
+
+  saveAndRefresh(Map<String, dynamic> messages) {
+    storage.setItem(_viewKey, messages);
+    print("saving $_viewKey $messages");
+    emit(LoadedI18nMessagesState(I18NMessages(messages)));
   }
 }
