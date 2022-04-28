@@ -13,7 +13,9 @@ class DashboardContainer extends BlocContainer {
     return BlocProvider(
       create: (_) => NameCubit("Débora"),
       child: I18NLoadingContainer(
-        (I18NMessages messages) => DashboardView(DashboardViewLazyI18N(messages)),
+        viewKey: "dashboard",
+        creator: (I18NMessages messages) =>
+            DashboardView(DashboardViewLazyI18N(messages)),
       ),
     );
   }
@@ -90,11 +92,14 @@ class DashboardViewLazyI18N {
 class DashboardViewI18N extends ViewI18N {
   DashboardViewI18N(BuildContext context) : super(context);
 
-  String? get transfer => localize({"pt-br": "Transferir", "en-us": "Transfer"});
+  String? get transfer =>
+      localize({"pt-br": "Transferir", "en-us": "Transfer"});
 
-  String? get transactionFeed => localize({"pt-br": "Transações", "en-us": "Transaction Feed"});
+  String? get transactionFeed =>
+      localize({"pt-br": "Transações", "en-us": "Transaction Feed"});
 
-  String? get changeName => localize({"pt-br": "Mudar Nome", "en-us": "Change Name"});
+  String? get changeName =>
+      localize({"pt-br": "Mudar Nome", "en-us": "Change Name"});
 }
 
 void _showContactsList(BuildContext blocContext) {
