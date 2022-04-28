@@ -8,7 +8,7 @@ final Uri messagesUri = Uri.https(
         "4af6389358e7487f88e2bba09504a380/" /* GIST_ID */
 
         "raw/"
-        "5ad37bd43c769e806fe422c360141500d26e9fe6/" /* COMMIT_ID */
+        "f138f1fd48fe63f9cf772a7fae784b3b8783792e/" /* COMMIT_ID */
 
         "i18n.json" /* FILE_NAME */);
 
