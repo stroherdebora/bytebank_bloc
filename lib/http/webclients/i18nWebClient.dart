@@ -13,8 +13,11 @@ final Uri messagesUri = Uri.https(
         "i18n.json" /* FILE_NAME */);
 
 class I18NWebClient {
+  final String _viewKey;
+
+  I18NWebClient(this._viewKey);
   Future<Map<String, dynamic>> findAll() async {
-    final Response response = await client.get(messagesUri);
+    final Response response = await client.get("$messagesUri$_viewKey.json");
 
     final Map<String, dynamic> decodedJson = jsonDecode(response.body);
 
