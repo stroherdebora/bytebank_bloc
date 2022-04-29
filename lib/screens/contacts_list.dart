@@ -1,5 +1,5 @@
 import 'package:bytebank/components/container.dart';
-import 'package:bytebank/components/progress.dart';
+import 'package:bytebank/components/progress/progress.dart';
 import 'package:bytebank/database/dao/contact_dao.dart';
 import 'package:bytebank/models/contact.dart';
 import 'package:bytebank/screens/contact_form.dart';
@@ -79,7 +79,8 @@ class ContactsList extends StatelessWidget {
       ),
       body: BlocBuilder<ContactsListCubit, ContactsListState>(
         builder: (context, state) {
-          if (state is InitContactsListState || state is LoadingContactsListState) {
+          if (state is InitContactsListState ||
+              state is LoadingContactsListState) {
             return Progress();
           }
           if (state is LoadedContactsListState) {

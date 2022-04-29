@@ -2,8 +2,9 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:bytebank/components/container.dart';
-import 'package:bytebank/components/error.dart';
-import 'package:bytebank/components/progress.dart';
+import 'package:bytebank/components/error_view.dart';
+import 'package:bytebank/components/progress/progress.dart';
+import 'package:bytebank/components/progress/progress_view.dart';
 import 'package:bytebank/components/transaction_auth_dialog.dart';
 import 'package:bytebank/http/webclients/transaction_webclient.dart';
 import 'package:bytebank/models/contact.dart';
@@ -42,7 +43,8 @@ class FatalErrorFormState extends TransactionFormState {
 class TransactionFormCubit extends Cubit<TransactionFormState> {
   TransactionFormCubit() : super(ShowFormState());
 
-  void save(Transaction transactionCreated, String password, BuildContext context) async {
+  void save(Transaction transactionCreated, String password,
+      BuildContext context) async {
     emit(SendingState());
     await _send(
       transactionCreated,
@@ -51,7 +53,8 @@ class TransactionFormCubit extends Cubit<TransactionFormState> {
     );
   }
 
-  _send(Transaction transactionCreated, String password, BuildContext context) async {
+  _send(Transaction transactionCreated, String password,
+      BuildContext context) async {
     await TransactionWebClient()
         .save(transactionCreated, password)
         .then((transaction) => emit(
@@ -94,7 +97,8 @@ class TransactionFormStateless extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<TransactionFormCubit, TransactionFormState>(builder: (context, state) {
+    return BlocBuilder<TransactionFormCubit, TransactionFormState>(
+        builder: (context, state) {
       if (state is ShowFormState) {
         return _BasicForm(_contact);
       }
@@ -185,14 +189,17 @@ class _BasicForm extends StatelessWidget {
                   child: ElevatedButton(
                     child: Text('Transfer'),
                     onPressed: () {
-                      final double? value = double.tryParse(_valueController.text);
-                      final transactionCreated = Transaction(transactionId, value!, _contact);
+                      final double? value =
+                          double.tryParse(_valueController.text);
+                      final transactionCreated =
+                          Transaction(transactionId, value!, _contact);
                       showDialog(
                         context: context,
                         builder: (contextDialog) {
                           return TransactionAuthDialog(
                             onConfirm: (String password) {
-                              BlocProvider.of<TransactionFormCubit>(context).save(transactionCreated, password, context);
+                              BlocProvider.of<TransactionFormCubit>(context)
+                                  .save(transactionCreated, password, context);
                             },
                           );
                         },
