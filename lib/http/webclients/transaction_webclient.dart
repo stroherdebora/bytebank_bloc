@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 
 class TransactionWebClient {
   Future<List<Transaction>> findAll() async {
-    final Response response = await client.get(Uri.http('192.168.13.108:8080', 'transactions'));
+    final Response response = await client.get(Uri.http('192.168.13.120:8080', 'transactions'));
 
     final List<dynamic> decodedJson = jsonDecode(response.body);
 
@@ -15,7 +15,7 @@ class TransactionWebClient {
   Future<Transaction?> save(Transaction transaction, String password) async {
     final String transactionJson = jsonEncode(transaction.toJson());
 
-    final Response? response = await client.post(Uri.http('192.168.13.108:8080', 'transactions'),
+    final Response? response = await client.post(Uri.http('192.168.13.120:8080', 'transactions'),
         headers: {
           'Content-type': 'application/json',
           'password': password,

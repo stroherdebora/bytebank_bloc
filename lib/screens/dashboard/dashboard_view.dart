@@ -1,7 +1,4 @@
 import 'package:bytebank/components/container.dart';
-import 'package:bytebank/components/localization/eager_localization.dart';
-import 'package:bytebank/components/localization/i18n_container.dart';
-import 'package:bytebank/components/localization/i18n_messages.dart';
 import 'package:bytebank/models/name.dart';
 import 'package:bytebank/screens/contacts_list.dart';
 import 'package:bytebank/screens/dashboard/dashboard_feature_item.dart';
